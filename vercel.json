@@ -1,5 +1,5 @@
 {
-  "buildCommand": "cd artifacts/dental-clinic && npm run build",
+  "buildCommand": "npm run build --workspace=@workspace/dental-clinic",
   "outputDirectory": "artifacts/dental-clinic/dist/public",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": null,
