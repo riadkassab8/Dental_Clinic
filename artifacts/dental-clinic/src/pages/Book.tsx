@@ -1,11 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import {
-  useListServices,
-  useListDoctors,
-  useGetAvailableSlots,
-  useCreateAppointment
-} from "@workspace/api-client-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -17,6 +11,87 @@ import { ar } from "date-fns/locale";
 import { Check, ChevronRight, ChevronLeft, User, Stethoscope, Calendar as CalendarIcon, Clock, ClipboardEdit, Loader2, PartyPopper } from "lucide-react";
 import { useLocation } from "wouter";
 import { useApp } from "@/contexts/AppContext";
+
+const services = [
+  {
+    id: 1,
+    nameAr: "فحص الأسنان",
+    nameEn: "Dental Checkup",
+    duration: 30,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.68629 2 6 4.68629 6 8C6 11.3137 12 22 12 22C12 22 18 11.3137 18 8C18 4.68629 15.3137 2 12 2Z"/><path d="M12 11C12.5523 11 13 10.5523 13 10C13 9.44772 12.5523 9 12 9C11.4477 9 11 9.44772 11 10C11 10.5523 11.4477 11 12 11Z"/></svg>'
+  },
+  {
+    id: 2,
+    nameAr: "تبييض الأسنان",
+    nameEn: "Teeth Whitening",
+    duration: 60,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>'
+  },
+  {
+    id: 3,
+    nameAr: "حشو الأسنان",
+    nameEn: "Dental Filling",
+    duration: 45,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg>'
+  },
+  {
+    id: 4,
+    nameAr: "خلع الأسنان",
+    nameEn: "Tooth Extraction",
+    duration: 30,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M8 8l4-4 4 4"/><path d="M8 16l4 4 4-4"/></svg>'
+  },
+  {
+    id: 5,
+    nameAr: "جذور الأسنان",
+    nameEn: "Root Canal",
+    duration: 90,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2a5 5 0 0 0-5 5v2a5 5 0 0 0 10 0V7a5 5 0 0 0-5-5z"/><path d="M12 14v8"/><path d="M8 17h8"/></svg>'
+  },
+  {
+    id: 6,
+    nameAr: "تقويم الأسنان",
+    nameEn: "Orthodontics",
+    duration: 45,
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 12c0-4 4-8 8-8s8 4 8 8"/><path d="M4 12c0 4 4 8 8 8s8-4 8-8"/><path d="M4 12h16"/></svg>'
+  }
+];
+
+const doctors = [
+  {
+    id: 1,
+    nameAr: "د. أحمد محمد",
+    nameEn: "Dr. Ahmed Mohamed",
+    specialtyAr: "طب الأسنان العام",
+    specialtyEn: "General Dentistry"
+  },
+  {
+    id: 2,
+    nameAr: "د. سارة علي",
+    nameEn: "Dr. Sarah Ali",
+    specialtyAr: "تجميل الأسنان",
+    specialtyEn: "Cosmetic Dentistry"
+  },
+  {
+    id: 3,
+    nameAr: "د. محمود حسن",
+    nameEn: "Dr. Mahmoud Hassan",
+    specialtyAr: "زراعة الأسنان",
+    specialtyEn: "Dental Implants"
+  }
+];
+
+const getAvailableSlots = () => [
+  { time: "09:00", available: true },
+  { time: "10:00", available: true },
+  { time: "11:00", available: false },
+  { time: "12:00", available: true },
+  { time: "13:00", available: true },
+  { time: "14:00", available: false },
+  { time: "15:00", available: true },
+  { time: "16:00", available: true },
+  { time: "17:00", available: true }
+];
 
 export default function Book() {
   const [location, setLocation] = useLocation();
@@ -45,18 +120,14 @@ export default function Book() {
     notes: ""
   });
 
-  const { data: services, isLoading: loadingServices } = useListServices();
-  const { data: doctors, isLoading: loadingDoctors } = useListDoctors();
+  const loadingServices = false;
+  const loadingDoctors = false;
+  const loadingSlots = false;
+  const slots = getAvailableSlots();
+  const isPending = false;
+  const [bookingComplete, setBookingComplete] = useState(false);
 
   const formattedDate = format(formData.date, "yyyy-MM-dd");
-
-  const { data: slots, isLoading: loadingSlots, refetch: refetchSlots } = useGetAvailableSlots(
-    { date: formattedDate, doctorId: formData.doctorId || undefined },
-    { query: { enabled: !!formattedDate && step === 3 } }
-  );
-
-  const createAppointment = useCreateAppointment();
-  const [bookingComplete, setBookingComplete] = useState(false);
 
   const steps = [
     { id: 1, title: t("book.step1"), icon: Stethoscope },
@@ -94,25 +165,10 @@ export default function Book() {
   };
 
   const submitBooking = () => {
-    createAppointment.mutate({
-      data: {
-        patientName: formData.patientName,
-        patientPhone: formData.patientPhone,
-        patientEmail: formData.patientEmail,
-        notes: formData.notes,
-        serviceId: formData.serviceId,
-        doctorId: formData.doctorId,
-        date: formattedDate,
-        time: formData.time
-      }
-    }, {
-      onSuccess: () => {
-        setBookingComplete(true);
-      },
-      onError: () => {
-        toast({ title: t("book.errorMsg"), variant: "destructive" });
-      }
-    });
+    // Simulate API call
+    setTimeout(() => {
+      setBookingComplete(true);
+    }, 1000);
   };
 
   const ChevronNext = isRTL ? ChevronLeft : ChevronRight;
@@ -326,7 +382,6 @@ export default function Book() {
                       onSelect={(date) => {
                         if (date) {
                           setFormData(p => ({ ...p, date, time: "" }));
-                          setTimeout(() => refetchSlots(), 100);
                         }
                       }}
                       className="rounded-xl border bg-card mx-auto shadow-sm"
@@ -447,7 +502,7 @@ export default function Book() {
           <Button
             variant="ghost"
             onClick={handleBack}
-            disabled={step === 1 || createAppointment.isPending}
+            disabled={step === 1 || isPending}
             className="rounded-xl px-6"
           >
             {t("book.back")}
@@ -455,10 +510,10 @@ export default function Book() {
 
           <Button
             onClick={handleNext}
-            disabled={createAppointment.isPending}
+            disabled={isPending}
             className="rounded-xl px-8 h-12 font-bold shadow-md"
           >
-            {createAppointment.isPending ? (
+            {isPending ? (
               <>
                 <Loader2 className={`w-5 h-5 animate-spin ${isRTL ? "ml-2" : "mr-2"}`} />
                 {t("book.confirming")}

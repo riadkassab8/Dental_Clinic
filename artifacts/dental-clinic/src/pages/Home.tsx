@@ -2,14 +2,38 @@ import { Link } from "wouter";
 import { Button } from "@/components/ui/button";
 import { CalendarHeart, CheckCircle2, Star, ArrowLeft, ArrowRight } from "lucide-react";
 import { motion } from "framer-motion";
-import { useListServices, useListDoctors } from "@workspace/api-client-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useApp } from "@/contexts/AppContext";
 
+const services = [
+  {
+    id: 1,
+    nameAr: "فحص الأسنان",
+    nameEn: "Dental Checkup",
+    descriptionAr: "فحص شامل لأسنانك للتأكد من صحتها واكتشاف أي مشاكل مبكراً.",
+    descriptionEn: "Comprehensive dental checkup to ensure your oral health and detect issues early.",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2C8.68629 2 6 4.68629 6 8C6 11.3137 12 22 12 22C12 22 18 11.3137 18 8C18 4.68629 15.3137 2 12 2Z"/><path d="M12 11C12.5523 11 13 10.5523 13 10C13 9.44772 12.5523 9 12 9C11.4477 9 11 9.44772 11 10C11 10.5523 11.4477 11 12 11Z"/></svg>'
+  },
+  {
+    id: 2,
+    nameAr: "تبييض الأسنان",
+    nameEn: "Teeth Whitening",
+    descriptionAr: "خدمة تبييض الأسنان الاحترافية للحصول على ابتسامة مشرقة.",
+    descriptionEn: "Professional teeth whitening service for a bright, beautiful smile.",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9.01" y2="9"/><line x1="15" y1="9" x2="15.01" y2="9"/></svg>'
+  },
+  {
+    id: 3,
+    nameAr: "حشو الأسنان",
+    nameEn: "Dental Filling",
+    descriptionAr: "حشو الأسنان لعلاج التسوس واستعادة وظيفة السن.",
+    descriptionEn: "Dental filling to treat cavities and restore tooth function.",
+    icon: '<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 3h18v18H3z"/><path d="M9 9h6v6H9z"/></svg>'
+  }
+];
+
 export default function Home() {
-  const { data: services, isLoading: loadingServices } = useListServices();
-  const { data: doctors, isLoading: loadingDoctors } = useListDoctors();
   const { t, lang, isRTL } = useApp();
+  const loadingServices = false;
 
   const fadeInUp = {
     initial: { opacity: 0, y: 20 },
@@ -94,13 +118,8 @@ export default function Home() {
             <p className="text-muted-foreground max-w-2xl mx-auto text-lg">{t("services.sectionDesc")}</p>
           </div>
 
-          {loadingServices ? (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {[1, 2, 3].map(i => <Skeleton key={i} className="h-64 rounded-2xl" />)}
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {services?.slice(0, 3).map((service, idx) => (
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {services.slice(0, 3).map((service, idx) => (
                 <motion.div
                   key={service.id}
                   initial={{ opacity: 0, y: 20 }}
@@ -121,7 +140,6 @@ export default function Home() {
                 </motion.div>
               ))}
             </div>
-          )}
 
           <div className="text-center mt-12">
             <Button asChild variant="outline" size="lg" className="rounded-xl">

@@ -1,19 +1,50 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { useListAppointments } from "@workspace/api-client-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Search, Calendar as CalendarIcon, Clock, User, Stethoscope } from "lucide-react";
 import { format } from "date-fns";
 import { ar } from "date-fns/locale";
 import { Badge } from "@/components/ui/badge";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useApp } from "@/contexts/AppContext";
+
+const allAppointments = [
+  {
+    id: 1,
+    patientName: "أحمد محمد",
+    patientPhone: "0501234567",
+    serviceId: 1,
+    doctorId: 1,
+    date: "2024-12-15",
+    time: "10:00",
+    status: "confirmed"
+  },
+  {
+    id: 2,
+    patientName: "سارة علي",
+    patientPhone: "0509876543",
+    serviceId: 2,
+    doctorId: 2,
+    date: "2024-12-16",
+    time: "14:00",
+    status: "pending"
+  },
+  {
+    id: 3,
+    patientName: "محمود حسن",
+    patientPhone: "0505555555",
+    serviceId: 3,
+    doctorId: 3,
+    date: "2024-12-17",
+    time: "09:00",
+    status: "completed"
+  }
+];
 
 export default function Appointments() {
   const [phoneSearch, setPhoneSearch] = useState("");
   const [hasSearched, setHasSearched] = useState(false);
-  const { data: allAppointments, isLoading } = useListAppointments();
+  const isLoading = false;
   const { t, lang } = useApp();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -89,11 +120,7 @@ export default function Appointments() {
           <div className="space-y-6">
             <h3 className="text-2xl font-bold border-b pb-4">{t("appt.results")}</h3>
 
-            {isLoading ? (
-              <div className="space-y-4">
-                {[1, 2].map(i => <Skeleton key={i} className="h-40 rounded-2xl w-full" />)}
-              </div>
-            ) : filteredAppointments && filteredAppointments.length > 0 ? (
+            {filteredAppointments && filteredAppointments.length > 0 ? (
               <div className="space-y-4">
                 {filteredAppointments.map(appointment => (
                   <motion.div

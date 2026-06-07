@@ -1,15 +1,46 @@
 import { motion } from "framer-motion";
-import { useListDoctors } from "@workspace/api-client-react";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 import { Link } from "wouter";
 import { CalendarHeart, Award } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useApp } from "@/contexts/AppContext";
 
+const doctors = [
+  {
+    id: 1,
+    nameAr: "د. أحمد محمد",
+    nameEn: "Dr. Ahmed Mohamed",
+    specialtyAr: "طب الأسنان العام",
+    specialtyEn: "General Dentistry",
+    experience: 15,
+    bio: "طبيب أسنان ذو خبرة واسعة في علاج جميع مشاكل الأسنان مع التركيز على الرعاية الوقائية.",
+    imageUrl: ""
+  },
+  {
+    id: 2,
+    nameAr: "د. سارة علي",
+    nameEn: "Dr. Sarah Ali",
+    specialtyAr: "تجميل الأسنان",
+    specialtyEn: "Cosmetic Dentistry",
+    experience: 12,
+    bio: "متخصصة في تجميل الأسنان وابتسامة هوليود مع خبرة في تبييض الأسنان والفينير.",
+    imageUrl: ""
+  },
+  {
+    id: 3,
+    nameAr: "د. محمود حسن",
+    nameEn: "Dr. Mahmoud Hassan",
+    specialtyAr: "زراعة الأسنان",
+    specialtyEn: "Dental Implants",
+    experience: 20,
+    bio: "خبير في زراعة الأسنان وجراحة الفم مع سجل حافل من النجاحات.",
+    imageUrl: ""
+  }
+];
+
 export default function Doctors() {
-  const { data: doctors, isLoading } = useListDoctors();
   const { t, lang } = useApp();
+  const isLoading = false;
 
   const container = {
     hidden: { opacity: 0 },
@@ -45,20 +76,13 @@ export default function Doctors() {
       </div>
 
       <div className="container mx-auto px-4">
-        {isLoading ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {[1, 2, 3].map(i => (
-              <Skeleton key={i} className="h-96 rounded-3xl" />
-            ))}
-          </div>
-        ) : (
-          <motion.div
-            variants={container}
-            initial="hidden"
-            animate="show"
-            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
-          >
-            {doctors?.map((doctor) => (
+        <motion.div
+          variants={container}
+          initial="hidden"
+          animate="show"
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8"
+        >
+          {doctors.map((doctor) => (
               <motion.div
                 key={doctor.id}
                 variants={item}
@@ -99,7 +123,6 @@ export default function Doctors() {
               </motion.div>
             ))}
           </motion.div>
-        )}
       </div>
     </div>
   );
