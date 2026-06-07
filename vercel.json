@@ -1,0 +1,12 @@
+{
+  "buildCommand": "cd artifacts/dental-clinic && npm run build",
+  "outputDirectory": "artifacts/dental-clinic/dist/public",
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": null,
+  "rewrites": [
+    {
+      "source": "/(.*)",
+      "destination": "/index.html"
+    }
+  ]
+}
