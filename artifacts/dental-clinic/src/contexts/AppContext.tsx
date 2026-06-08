@@ -1,12 +1,9 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 
-export type Theme = "light" | "dark";
 export type Lang = "ar" | "en";
 
 interface AppContextValue {
-  theme: Theme;
   lang: Lang;
-  toggleTheme: () => void;
   toggleLang: () => void;
   t: (key: string) => string;
   isRTL: boolean;
@@ -52,6 +49,7 @@ const translations: Record<string, Record<Lang, string>> = {
   "services.duration": { ar: "المدة التقريبية:", en: "Duration:" },
   "services.minutes": { ar: "دقيقة", en: "min" },
   "services.bookService": { ar: "احجز لهذه الخدمة", en: "Book This Service" },
+  "services.bookSelected": { ar: "احجز الخدمات المختارة", en: "Book Selected Services" },
 
   "doctors.pageTitle1": { ar: "نخبة من", en: "Our Expert" },
   "doctors.pageTitle2": { ar: "الأطباء", en: "Doctors" },
@@ -154,25 +152,10 @@ const translations: Record<string, Record<Lang, string>> = {
 };
 
 export function AppContextProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<Theme>(() => {
-    const stored = localStorage.getItem("clinic-theme");
-    return (stored as Theme) || "light";
-  });
-
   const [lang, setLang] = useState<Lang>(() => {
     const stored = localStorage.getItem("clinic-lang");
     return (stored as Lang) || "ar";
   });
-
-  useEffect(() => {
-    const root = document.documentElement;
-    if (theme === "dark") {
-      root.classList.add("dark");
-    } else {
-      root.classList.remove("dark");
-    }
-    localStorage.setItem("clinic-theme", theme);
-  }, [theme]);
 
   useEffect(() => {
     const root = document.documentElement;
@@ -181,7 +164,6 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
     localStorage.setItem("clinic-lang", lang);
   }, [lang]);
 
-  const toggleTheme = () => setTheme(t => t === "light" ? "dark" : "light");
   const toggleLang = () => setLang(l => l === "ar" ? "en" : "ar");
 
   const t = (key: string): string => {
@@ -189,7 +171,7 @@ export function AppContextProvider({ children }: { children: React.ReactNode }) 
   };
 
   return (
-    <AppContext.Provider value={{ theme, lang, toggleTheme, toggleLang, t, isRTL: lang === "ar" }}>
+    <AppContext.Provider value={{ lang, toggleLang, t, isRTL: lang === "ar" }}>
       {children}
     </AppContext.Provider>
   );

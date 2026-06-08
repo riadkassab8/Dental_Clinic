@@ -150,7 +150,7 @@ export default function Home() {
       </section>
 
       {/* CTA Section */}
-      <section className="py-24 relative overflow-hidden">
+      <section className="py-24 pb-0 relative overflow-hidden">
         <div className="absolute inset-0 bg-primary"></div>
         <div className="absolute inset-0 opacity-10" style={{ backgroundImage: "url('https://www.transparenttextures.com/patterns/cubes.png')" }}></div>
         <div className="container mx-auto px-4 relative z-10 text-center">

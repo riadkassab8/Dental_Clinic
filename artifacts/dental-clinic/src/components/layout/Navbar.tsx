@@ -1,6 +1,6 @@
 import React from "react";
 import { Link, useLocation } from "wouter";
-import { Menu, X, Phone, CalendarHeart, Sun, Moon } from "lucide-react";
+import { Menu, X, Phone, CalendarHeart } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useApp } from "@/contexts/AppContext";
 import { motion, AnimatePresence } from "framer-motion";
@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 export function Navbar() {
   const [isOpen, setIsOpen] = React.useState(false);
   const [location] = useLocation();
-  const { theme, lang, toggleTheme, toggleLang, t } = useApp();
+  const { lang, toggleLang, t } = useApp();
 
   const links = [
     { href: "/", label: t("nav.home") },
@@ -51,16 +51,8 @@ export function Navbar() {
 
         {/* Desktop Controls */}
         <div className="hidden md:flex items-center gap-3">
-          <div className="flex items-center gap-2 text-primary font-bold text-sm">
-            <Phone className="w-4 h-4 shrink-0" />
-            <span dir="ltr">+966 50 000 0000</span>
-          </div>
-
           {/* Language Toggle */}
           <LangToggle lang={lang} toggle={toggleLang} />
-
-          {/* Theme Toggle */}
-          <ThemeToggle theme={theme} toggle={toggleTheme} />
 
           <Button asChild className="rounded-full font-bold px-5 shadow-sm hover:shadow-md transition-all text-sm">
             <Link href="/book">
@@ -73,7 +65,6 @@ export function Navbar() {
         {/* Mobile right side */}
         <div className="md:hidden flex items-center gap-2">
           <LangToggle lang={lang} toggle={toggleLang} compact />
-          <ThemeToggle theme={theme} toggle={toggleTheme} compact />
           <button
             className="p-2 text-foreground"
             onClick={() => setIsOpen(!isOpen)}
@@ -118,40 +109,6 @@ export function Navbar() {
   );
 }
 
-function ThemeToggle({ theme, toggle, compact }: { theme: string; toggle: () => void; compact?: boolean }) {
-  const isDark = theme === "dark";
-  return (
-    <button
-      onClick={toggle}
-      aria-label="Toggle theme"
-      title={isDark ? "Switch to light mode" : "Switch to dark mode"}
-      className={`relative flex items-center rounded-full border border-border bg-muted transition-colors hover:border-primary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${compact ? "w-12 h-6 px-0.5" : "w-14 h-7 px-1"}`}
-    >
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 500, damping: 35 }}
-        className={`flex items-center justify-center rounded-full bg-primary shadow-sm ${compact ? "w-5 h-5" : "w-5 h-5"}`}
-        style={{ marginLeft: isDark ? (compact ? 24 : 30) : 0 }}
-      >
-        <AnimatePresence mode="wait" initial={false}>
-          <motion.div
-            key={isDark ? "moon" : "sun"}
-            initial={{ rotate: -30, opacity: 0, scale: 0.7 }}
-            animate={{ rotate: 0, opacity: 1, scale: 1 }}
-            exit={{ rotate: 30, opacity: 0, scale: 0.7 }}
-            transition={{ duration: 0.15 }}
-          >
-            {isDark
-              ? <Moon className="w-3 h-3 text-primary-foreground" />
-              : <Sun className="w-3 h-3 text-primary-foreground" />
-            }
-          </motion.div>
-        </AnimatePresence>
-      </motion.div>
-    </button>
-  );
-}
-
 function LangToggle({ lang, toggle, compact }: { lang: string; toggle: () => void; compact?: boolean }) {
   const isAR = lang === "ar";
   return (
@@ -159,21 +116,11 @@ function LangToggle({ lang, toggle, compact }: { lang: string; toggle: () => voi
       onClick={toggle}
       aria-label="Switch language"
       title={isAR ? "Switch to English" : "التبديل إلى العربية"}
-      className={`relative flex items-center rounded-full border border-border bg-muted overflow-hidden font-bold transition-colors hover:border-primary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${compact ? "h-6 text-xs" : "h-7 text-xs"}`}
+      className={`relative flex items-center rounded-lg border-2 border-primary/20 bg-background hover:bg-primary/5 font-bold transition-all hover:border-primary/40 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary ${compact ? "h-8 px-3 text-xs" : "h-9 px-4 text-sm"}`}
     >
-      {/* Sliding pill */}
-      <motion.div
-        layout
-        transition={{ type: "spring", stiffness: 500, damping: 35 }}
-        className="absolute top-0.5 bottom-0.5 rounded-full bg-primary"
-        style={{
-          width: compact ? 22 : 26,
-          left: isAR ? (compact ? 2 : 2) : "auto",
-          right: isAR ? "auto" : (compact ? 2 : 2),
-        }}
-      />
-      <span className={`relative z-10 transition-colors px-2 ${compact ? "px-1.5" : "px-2"} ${isAR ? "text-primary-foreground" : "text-muted-foreground"}`}>ع</span>
-      <span className={`relative z-10 transition-colors px-2 ${compact ? "px-1.5" : "px-2"} ${!isAR ? "text-primary-foreground" : "text-muted-foreground"}`}>EN</span>
+      <span className={`transition-colors ${isAR ? "text-primary font-bold" : "text-muted-foreground"}`}>ع</span>
+      <span className={`mx-2 text-muted-foreground`}>/</span>
+      <span className={`transition-colors ${!isAR ? "text-primary font-bold" : "text-muted-foreground"}`}>EN</span>
     </button>
   );
 }
